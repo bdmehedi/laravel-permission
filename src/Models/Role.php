@@ -11,11 +11,6 @@ class Role extends Model
 {
     protected $fillable = ['role'];
 
-    public function users()
-    {
-        return $this->hasMany(config('roles_and_permissions.user_model'));
-    }
-
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, 'roles_permissions', 'role_id', 'permission_id');

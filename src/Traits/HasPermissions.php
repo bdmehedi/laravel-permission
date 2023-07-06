@@ -7,7 +7,7 @@ use BdMehedi\LaravelPermission\Models\Permission;
 use BdMehedi\LaravelPermission\Models\Role;
 use Illuminate\Support\Arr;
 
-trait HasPermissionsTrait
+trait HasPermissions
 {
     public function givePermissionTo(...$permissions)
     {
@@ -73,6 +73,7 @@ trait HasPermissionsTrait
 
     public function hasPermissionTo($permission)
     {
+        $permission = $permission instanceof Permission ? $permission : Permission::where('name', $permission)->first();
         return $this->hasPermissionThroughRole($permission) || $this->hasPermission($permission);
     }
 
@@ -93,7 +94,7 @@ trait HasPermissionsTrait
 
     protected function hasPermission($permission)
     {
-        return (bool)$this->permissions->where('name', $permission->name)->count();
+        return (bool)$this->permissions()->where('name', $permission->name)->count();
     }
 
     protected function getAllPermissions(array $permissions)
@@ -108,12 +109,12 @@ trait HasPermissionsTrait
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'users_roles', 'user_id', 'role_id');
+        return $this->belongsToMany(Role::class, $this->rolePivotTable ?? 'users_roles');
     }
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, 'users_permissions', 'user_id', 'permission_id');
+        return $this->belongsToMany(Permission::class, $this->permissionPivotTable ?? 'users_permissions');
     }
 
 }

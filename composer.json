@@ -1,10 +1,11 @@
 {
     "name": "bdmehedi/laravel-permission",
+    "version": "0.0.1",
     "description": "A laravel package to manage laravel roles and permissions",
     "type": "package",
     "license": "MIT",
     "keywords": ["laravel permission", "laravel role and premission", "permission", "permission manager"],
-    "homepage": "https://github.com/mehedimi/laravel-dynamodb",
+    "homepage": "https://github.com/bdmehedi/laravel-permission",
     "autoload": {
         "psr-4": {
             "BdMehedi\\LaravelPermission\\": "src/"
@@ -12,13 +13,17 @@
     },
     "authors": [
         {
-            "name": "bdmehedi",
-            "email": "bdmehedi92@gmail.com"
+            "name": "Md Mehedi Hasan",
+            "email": "bdmehedi92@gmail.com",
+            "homepage": "https://mehedihasan.im"
         }
     ],
     "minimum-stability": "dev",
     "prefer-stable" : true,
-    "require": {},
+    "require": {
+        "php": ">=7.3",
+        "illuminate/support": ">=6.0"
+    },
     "extra": {
         "laravel": {
             "providers": [
