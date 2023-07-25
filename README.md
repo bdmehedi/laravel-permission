@@ -44,25 +44,91 @@ $role = Role::create(['role' => 'admin']);
 $permission = Permission::create(['name' => 'create-user', 'group' => 'user']);  //the group is optional
 ```
 
-##### Assign roles and permissions to User
+#### Assign roles and permissions to User
 ```php
-$user->assignRole(['admin']);
+$user->assignRole('admin');
+$user->givePermissionTo('create-user');
+
+//or your can assign permissions by providing an array
+$user->assignRole(['admin', 'user']);
 $user->givePermissionTo(['create-user']);
 ```
 
 #### Withdraw roles and permissions from User
 ```php
+// Single permission or role
+$user->revokeRole('admin');
+$user->withdrawPermissionTo('create-user');
+
+// Or array of permissions or roles
 $user->revokeRole(['admin']);
 $user->withdrawPermissionTo(['create-user']);
 ```
 
-##### Give permissions to Role
+#### Give permissions to Role
 ```php
+$role->givePermissionTo('create-user');
+
+//or an array or permissions
 $role->givePermissionTo(['create-user']);
 ```
 
 #### Withdraw permissions from Role
 ```php
-$role->withdrawPermissionTo(['create-user']);
+$role->withdrawPermissionTo('create-user');
+
+//or array or permissions
+$role->givePermissionTo(['create-user']);
 ```
+
+#### Checking permissions
+You can check a user's permission with Laravel's default can function.
+```php
+$user->can('create-user');
+```
+
+Or you can check with hasPermissionTo
+```php
+$user->hasPermissionTo('create-user');
+```
+
+#### Checking roles
+```php
+$user->hasRole('admin');
+
+// or check at least one role from an array of roles:
+$user->hasRole(['admin', 'user']);
+```
+
+## Middleware
+### Default middleware
+You can use the laravel default middleware can provided by ```\Illuminate\Auth\Middleware\Authorize::class```
+```php
+Route::middleware('can:create-user')->group(function () {
+    
+});
+```
+
+### Package middleware
+If you can check at least one premission of many you can use the ```allow``` middleware
+```php
+Route::middleware('allow:create|view|delete')->group(function () {
+    
+});
+```
+if you have another guard you can user
+```php
+Route::middleware('allow:create|view|delete,guardName')->group(function () {
+    
+});
+```
+
+
+## Contribution Guide
+
+This is still in beta, though I have confidence that it will work as expected.
+You can contribute by reporting bugs, fixing bugs, reviewing pull requests, and more ways.
+Go to the [**issues**](https://github.com/bdmehedi/laravel-permission/issues) section, and you can start working on an issue immediately.
+If you want to add or fix something, open a pull request.
+
 
