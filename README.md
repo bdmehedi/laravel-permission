@@ -14,7 +14,7 @@ The <b>service provider</b> will be registered automatically. If you want, you m
 ```code
 'providers' => [
     // ...
-    Spatie\Permission\PermissionServiceProvider::class,
+    BdMehedi\LaravelPermission\LaravelPermissionServiceProvider::class,
 ];
 ```
 
