@@ -4,7 +4,7 @@
     "description": "A laravel package to manage laravel roles and permissions",
     "type": "package",
     "license": "MIT",
-    "keywords": ["laravel permission", "laravel role and premission", "permission", "permission manager"],
+    "keywords": ["laravel permission", "laravel role and premission", "permission", "permission manager", "role manager"],
     "homepage": "https://github.com/bdmehedi/laravel-permission",
     "autoload": {
         "psr-4": {
