@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 
 class Role extends Model
 {
-    protected $fillable = ['role'];
+    protected $fillable = ['name'];
 
     public function permissions()
     {

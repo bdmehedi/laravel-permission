@@ -64,7 +64,7 @@ trait HasPermissions
     public function hasRole(...$roles)
     {
         foreach ($roles as $role) {
-            if ($this->roles->contains('role', $role)) {
+            if ($this->roles->contains('name', $role)) {
                 return true;
             }
         }
@@ -83,7 +83,7 @@ trait HasPermissions
         $roles = $permission->roles;
         foreach ($roles as $role) {
             foreach ($userRoles as $userRole) {
-                if ($role->role == $userRole->role) {
+                if ($role->name == $userRole->name) {
                     return true;
                 }
             }
@@ -104,7 +104,7 @@ trait HasPermissions
 
     protected function getAllRoles(array $roles)
     {
-        return Role::whereIn('role', $roles)->get();
+        return Role::whereIn('name', $roles)->get();
     }
 
     public function roles()
