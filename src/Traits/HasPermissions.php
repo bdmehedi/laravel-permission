@@ -6,6 +6,7 @@ namespace BdMehedi\LaravelPermission\Traits;
 use BdMehedi\LaravelPermission\Models\Permission;
 use BdMehedi\LaravelPermission\Models\Role;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 
 trait HasPermissions
 {
@@ -21,6 +22,8 @@ trait HasPermissions
 
         $this->permissions()->sync($permissions);
 
+        $this->clearCache();
+
         return $this;
     }
 
@@ -34,12 +37,17 @@ trait HasPermissions
         $roles = array_merge($this->roles()->pluck('id')->toArray(), $roles->pluck('id')->all());
 
         $this->roles()->sync($roles);
+
+        $this->clearCache();
     }
 
     public function withdrawPermissionTo(...$permissions)
     {
         $permissions = $this->getAllPermissions(Arr::flatten($permissions));
         $this->permissions()->detach($permissions);
+
+        $this->clearCache();
+
         return $this;
     }
 
@@ -52,12 +60,17 @@ trait HasPermissions
         }
 
         $this->roles()->detach($roles);
+
+        $this->clearCache();
     }
 
     public function updatePermissionTo(...$permissions)
     {
         $permissions = $this->getAllPermissions(Arr::flatten($permissions));
         $this->permissions()->sync($permissions);
+
+        $this->clearCache();
+
         return $this;
     }
 
@@ -79,7 +92,9 @@ trait HasPermissions
 
     protected function hasPermissionThroughRole($permission)
     {
-        $userRoles = $this->roles;
+        $userRoles = Cache::remember($this->id . '-user-roles', now()->addDay(), function () {
+            return $this->roles;
+        });
         $roles = $permission->roles;
         foreach ($roles as $role) {
             foreach ($userRoles as $userRole) {
@@ -94,7 +109,10 @@ trait HasPermissions
 
     protected function hasPermission($permission)
     {
-        return (bool)$this->permissions()->where('name', $permission->name)->count();
+        $userPermissions = Cache::remember($this->id . '-user-permissions', now()->addDay(), function () {
+            return $this->permissions;
+        });
+        return (bool)$userPermissions->where('name', $permission->name)->count();
     }
 
     protected function getAllPermissions(array $permissions)
@@ -115,6 +133,13 @@ trait HasPermissions
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, $this->permissionPivotTable ?? 'users_permissions');
+    }
+
+    public function clearCache()
+    {
+        Cache::forget($this->id . '-user-roles');
+        Cache::forget($this->id . '-user-permissions');
+        Cache::forget('permissions');
     }
 
 }

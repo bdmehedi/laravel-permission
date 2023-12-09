@@ -6,6 +6,7 @@ namespace BdMehedi\LaravelPermission;
 use BdMehedi\LaravelPermission\Middleware\CheckPermissionMiddleware;
 use BdMehedi\LaravelPermission\Models\Permission;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -50,7 +51,11 @@ class LaravelPermissionServiceProvider extends ServiceProvider
     protected function registerAuthGate()
     {
         if (!App::runningInConsole()) {
-            Permission::with('roles')->get()->map(function ($permission) {
+            $permissions = Cache::remember('permissions', now()->addDay(), function () {
+                return Permission::with('roles')->get();
+            });
+
+            $permissions->map(function ($permission) {
                 Gate::define($permission->name, function ($user) use ($permission) {
                     return $user->hasPermissionTo($permission);
                 });
