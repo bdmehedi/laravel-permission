@@ -77,7 +77,8 @@ trait HasPermissions
     public function hasRole(...$roles)
     {
         foreach ($roles as $role) {
-            if ($this->roles->contains('name', $role)) {
+            $roles = $this->roles;
+            if ($roles->contains('name', $role) || $roles->contains('slug', $role)) {
                 return true;
             }
         }
@@ -127,12 +128,12 @@ trait HasPermissions
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class, $this->rolePivotTable ?? 'users_roles');
+        return $this->morphToMany(Role::class, 'roleable');
     }
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, $this->permissionPivotTable ?? 'users_permissions');
+        return $this->morphToMany(Permission::class, 'permissionable');
     }
 
     public function clearCache()
